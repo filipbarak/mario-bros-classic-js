@@ -1,1 +1,1 @@
-"# Mario Bros Classic written in JS" 
+# Mario Bros Classic written in JS 

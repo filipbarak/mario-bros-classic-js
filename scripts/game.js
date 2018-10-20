@@ -94,6 +94,8 @@ createMario = (physics, anims) => {
 }
 
 const setCursors = (cursors) => {
+
+    /* Walking */
     if (!cursors.up.isDown &&  mario.body.touching.down) {
         if (cursors.left.isDown) {
             mario.setVelocityX(-160);
@@ -111,6 +113,7 @@ const setCursors = (cursors) => {
         }
     }
 
+    /* Jumping */
     if (cursors.up.isDown && mario.body.touching.down) {
         if (cursors.left.isDown) {
             mario.anims.play('jump-left', true);
@@ -138,5 +141,5 @@ const createPlatforms = (physics) => {
         platforms.create(576 + i*64, 450, 'blue-block').setScale(2).refreshBody();
     }
 
-    platforms.create(400, 400, 'pow-block').setScale(2).refreshBody();
+    platforms.create(400, 460, 'pow-block').setScale(2).refreshBody();
 }

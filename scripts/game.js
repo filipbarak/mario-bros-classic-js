@@ -19,22 +19,25 @@ const config = {
 
 const game = new Phaser.Game(config);
 let mario;
+let platforms;
 
 function preload() {
     /* blocks */
 
-    this.load.image('blue-block', 'assets/blue-block.png');
     this.load.image('icy-block', 'assets/icy-block.png');
     this.load.image('orange-block', 'assets/orange-block.png');
 
     /* spirtesheets */
-    this.load.spritesheet('mario', 'assets/mario.png', { frameWidth: 32, frameHeight: 48 });
+    this.load.spritesheet('mario', 'assets/mario.png', { frameWidth: 29, frameHeight: 17 });
     this.load.spritesheet('blue-turtle', 'assets/blue-turtle.png', { frameWidth: 32, frameHeight: 48 });
     this.load.spritesheet('coin', 'assets/coin.png', { frameWidth: 32, frameHeight: 48 });
     this.load.spritesheet('main-turtle', 'assets/main-turtle.png', { frameWidth: 32, frameHeight: 48 });
     this.load.spritesheet('projectile-green', 'assets/projectile-green.png', { frameWidth: 32, frameHeight: 48 });
     this.load.spritesheet('red-crab', 'assets/red-crab.png', { frameWidth: 32, frameHeight: 48 });
     this.load.spritesheet('red-turtle', 'assets/red-turtle.png', { frameWidth: 32, frameHeight: 48 });
+    this.load.spritesheet('blue-block', 'assets/blue-block.png', { frameWidth: 32, frameHeight: 15 });
+    this.load.spritesheet('red-block', 'assets/red-block.png', { frameWidth: 32, frameHeight: 15 });
+    this.load.spritesheet('pow-block', 'assets/pow-block.png', { frameWidth: 16, frameHeight: 16 });
 
     /* pipes */
     this.load.image('curved-pipe', 'assets/curved-pipe.png');
@@ -43,6 +46,9 @@ function preload() {
 
 function create() {
     createMario(this.physics, this.anims);
+    createPlatforms(this.physics);
+
+    this.physics.add.collider(mario, platforms);
 }
 
 function update () {
@@ -50,7 +56,7 @@ function update () {
 }
 
 createMario = (physics, anims) => {
-    mario = physics.add.sprite(100, 450, 'mario');
+    mario = physics.add.sprite(280, 450, 'mario').setScale(2);
     mario.setCollideWorldBounds(true);
     mario.body.setGravityY(150)
 
@@ -76,7 +82,7 @@ createMario = (physics, anims) => {
     });
 }
 
-setCursors = (cursors) => {
+const setCursors = (cursors) => {
     if (cursors.left.isDown) {
         mario.setVelocityX(-160);
         mario.anims.play('left', true);
@@ -93,6 +99,23 @@ setCursors = (cursors) => {
     }
 
     if (cursors.up.isDown && mario.body.touching.down) {
-        mario.setVelocityY(-500);
+        mario.setVelocityY(-300);
     }
+}
+
+const createPlatforms = (physics) => {
+    platforms = physics.add.staticGroup();
+    for (let i = 0; i < 4; i++) {
+        for (let j = 1; j <= 17; j++) {
+            const offset = i % 2 === 1 ? 16 : 24;
+            platforms.create(j * 48 - offset, 600 - 15 * i - 15, 'red-block').setScale(2).refreshBody();
+        }
+    }
+
+    for (let i = 0; i < 4; i++) {
+        platforms.create(i * 64 + 32, 450, 'blue-block').setScale(2).refreshBody();
+        platforms.create(576 + i*64, 450, 'blue-block').setScale(2).refreshBody();
+    }
+
+    platforms.create(400, 450, 'pow-block').setScale(2).refreshBody();
 }

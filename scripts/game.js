@@ -79,25 +79,50 @@ createMario = (physics, anims) => {
         frameRate: 10,
         repeat: -1
     });
+
+    anims.create({
+        key: 'jump-left',
+        frames: [ { key: 'mario', frame: 0} ],
+        frameRate: 20,
+    });
+
+    anims.create({
+        key: 'jump-right',
+        frames: [ { key: 'mario', frame: 11} ],
+        frameRate: 20,
+    });
 }
 
 const setCursors = (cursors) => {
-    if (cursors.left.isDown) {
-        mario.setVelocityX(-160);
-        mario.anims.play('left', true);
+
+    /* Walking */
+    if (!cursors.up.isDown &&  mario.body.touching.down) {
+        if (cursors.left.isDown) {
+            mario.setVelocityX(-160);
+            mario.anims.play('left', true);
+        }
+
+        else if (cursors.right.isDown) {
+            mario.setVelocityX(160);
+            mario.anims.play('right', true);
+        }
+
+        else {
+            mario.setVelocityX(0);
+            mario.anims.play('turn');
+        }
     }
 
-    else if (cursors.right.isDown) {
-        mario.setVelocityX(160);
-        mario.anims.play('right', true);
-    }
-
-    else {
-        mario.setVelocityX(0);
-        mario.anims.play('turn');
-    }
-
+    /* Jumping */
     if (cursors.up.isDown && mario.body.touching.down) {
+        if (cursors.left.isDown) {
+            mario.anims.play('jump-left', true);
+            mario.setVelocityX(-160);
+        } else {
+            mario.anims.play('jump-right', true);
+            mario.setVelocityX(160);
+        }
+
         mario.setVelocityY(-300);
     }
 }
@@ -116,5 +141,5 @@ const createPlatforms = (physics) => {
         platforms.create(576 + i*64, 450, 'blue-block').setScale(2).refreshBody();
     }
 
-    platforms.create(400, 450, 'pow-block').setScale(2).refreshBody();
+    platforms.create(400, 460, 'pow-block').setScale(2).refreshBody();
 }

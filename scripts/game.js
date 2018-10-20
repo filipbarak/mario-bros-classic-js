@@ -20,6 +20,7 @@ const config = {
 const game = new Phaser.Game(config);
 let mario;
 let platforms;
+let pipes;
 
 function preload() {
     /* blocks */
@@ -47,6 +48,7 @@ function preload() {
 function create() {
     createMario(this.physics, this.anims);
     createPlatforms(this.physics);
+    createPipes(this.physics);
 
     this.physics.add.collider(mario, platforms);
 }
@@ -142,4 +144,10 @@ const createPlatforms = (physics) => {
     }
 
     platforms.create(400, 460, 'pow-block').setScale(2).refreshBody();
+}
+
+const createPipes = (physics) => {
+    pipes = physics.add.staticGroup();
+    pipes.create(0, 507, 'pipe').setScale(2).refreshBody();
+    pipes.create(800, 507, 'pipe').setScale(2).refreshBody();
 }

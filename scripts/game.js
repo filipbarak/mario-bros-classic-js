@@ -53,13 +53,12 @@ function create() {
 
 function update () {
     setCursors(this.input.keyboard.createCursorKeys());
+    this.physics.world.wrap(mario);
 }
 
 createMario = (physics, anims) => {
     mario = physics.add.sprite(280, 450, 'mario').setScale(2);
-    mario.setCollideWorldBounds(true);
     mario.body.setGravityY(150)
-
 
     anims.create({
         key: 'left',

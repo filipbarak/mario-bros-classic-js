@@ -96,35 +96,31 @@ createMario = (physics, anims) => {
 }
 
 const setCursors = (cursors) => {
-
-    /* Walking */
-    if (!cursors.up.isDown &&  mario.body.touching.down) {
-        if (cursors.left.isDown) {
-            mario.setVelocityX(-160);
+    if (cursors.left.isDown) {
+        mario.setVelocityX(-160);
+        if (mario.body.touching.down) {
             mario.anims.play('left', true);
+        } else {
+            mario.anims.play('jump-left', true);
         }
+    }
 
-        else if (cursors.right.isDown) {
-            mario.setVelocityX(160);
-            mario.anims.play('right', true);
+    else if (cursors.right.isDown) {
+        mario.setVelocityX(160);
+        if (mario.body.touching.down) {
+            mario.anims.play('right', true); 
+        } else {
+            mario.anims.play('jump-right', true);
         }
+    }
 
-        else {
-            mario.setVelocityX(0);
-            mario.anims.play('turn');
-        }
+    else {
+        mario.setVelocityX(0);
+        mario.anims.play('turn');
     }
 
     /* Jumping */
     if (cursors.up.isDown && mario.body.touching.down) {
-        if (cursors.left.isDown) {
-            mario.anims.play('jump-left', true);
-            mario.setVelocityX(-160);
-        } else {
-            mario.anims.play('jump-right', true);
-            mario.setVelocityX(160);
-        }
-
         mario.setVelocityY(-300);
     }
 }

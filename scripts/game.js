@@ -19,7 +19,9 @@ const config = {
 
 const game = new Phaser.Game(config);
 let mario;
-let platforms;
+let sidePlatforms;
+let floor;
+let powBlock;
 let pipes;
 let isFacingLeft;
 
@@ -51,8 +53,11 @@ function create() {
     createMario(this.physics, this.anims);
     createPlatforms(this.physics);
     createPipes(this.physics);
+    console.log(this, 'GAME');
 
-    this.physics.add.collider(mario, platforms);
+    this.physics.add.collider(mario, floor);
+    this.physics.add.collider(mario, platforms, hitPlatform, null, this);
+    this.physics.add.collider(mario, powBlock);
 }
 
 function update () {
@@ -101,6 +106,8 @@ createMario = (physics, anims) => {
         frames: [ { key: 'mario', frame: 6 } ],
         frameRate: 20,
     });
+
+    console.log(mario, 'Mario');
 }
 
 const setCursors = (cursors) => {
@@ -136,24 +143,47 @@ const setCursors = (cursors) => {
 }
 
 const createPlatforms = (physics) => {
-    platforms = physics.add.staticGroup();
+    floor = physics.add.staticGroup();
     for (let i = 0; i < 4; i++) {
         for (let j = 1; j <= 17; j++) {
             const offset = i % 2 === 1 ? 16 : 24;
-            platforms.create(j * 48 - offset, 600 - 15 * i - 15, 'red-block').setScale(2).refreshBody();
+            floor.create(j * 48 - offset, 600 - 15 * i - 15, 'red-block').setScale(2).refreshBody();
         }
     }
+
+    platforms = physics.add.staticGroup();
 
     for (let i = 0; i < 4; i++) {
         platforms.create(i * 64 + 32, 450, 'blue-block').setScale(2).refreshBody();
         platforms.create(576 + i*64, 450, 'blue-block').setScale(2).refreshBody();
     }
 
-    platforms.create(400, 460, 'pow-block').setScale(2).refreshBody();
+    console.log(platforms.getChildren(), 'CHILDREN')
+
+    powBlock = physics.add.staticGroup();
+
+    powBlock.create(400, 460, 'pow-block').setScale(2).refreshBody();
 }
 
 const createPipes = (physics) => {
     pipes = physics.add.staticGroup();
     pipes.create(0, 507, 'pipe').setScale(2).refreshBody();
     pipes.create(800, 507, 'pipe').setScale(2).refreshBody();
+}
+
+const hitPlatform = function() {
+    const {x, y} = mario.getBounds();    
+    const localPlatforms = platforms.getChildren();
+    const offsetY = Math.round(y - 19);
+    localPlatforms.forEach(platform => {
+        console.log(platform);
+        if (offsetY == platform.y) {
+            console.log('bot')
+        }
+    });
+    // platforms.children.forEach(platform => {
+    //     if (mario.y == platform.y) {
+    //         console.log('Hit!');
+    //     }
+    // });
 }

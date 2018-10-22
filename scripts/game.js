@@ -21,6 +21,8 @@ const game = new Phaser.Game(config);
 let mario;
 let platforms;
 let pipes;
+let isFacingLeft;
+
 
 function preload() {
     /* blocks */
@@ -60,19 +62,13 @@ function update () {
 
 createMario = (physics, anims) => {
     mario = physics.add.sprite(280, 450, 'mario').setScale(2);
-    mario.body.setGravityY(150)
+    mario.body.setGravityY(200);
 
     anims.create({
         key: 'left',
         frames: anims.generateFrameNumbers('mario', {start: 1, end: 4}),
         frameRate: 10,
         repeat: -1
-    });
-
-    anims.create({
-        key: 'turn',
-        frames: [ { key: 'mario', frame: 6 } ],
-        frameRate: 20
     });
 
     anims.create({
@@ -93,10 +89,23 @@ createMario = (physics, anims) => {
         frames: [ { key: 'mario', frame: 11} ],
         frameRate: 20,
     });
+
+    anims.create({
+        key: 'facing-left',
+        frames: [ { key: 'mario', frame: 5 } ],
+        frameRate: 20,
+    });
+
+    anims.create({
+        key: 'facing-right',
+        frames: [ { key: 'mario', frame: 6 } ],
+        frameRate: 20,
+    });
 }
 
 const setCursors = (cursors) => {
     if (cursors.left.isDown) {
+        isFacingLeft = true;
         mario.setVelocityX(-160);
         if (mario.body.touching.down) {
             mario.anims.play('left', true);
@@ -106,9 +115,10 @@ const setCursors = (cursors) => {
     }
 
     else if (cursors.right.isDown) {
+        isFacingLeft = false;
         mario.setVelocityX(160);
         if (mario.body.touching.down) {
-            mario.anims.play('right', true); 
+            mario.anims.play('right', true);
         } else {
             mario.anims.play('jump-right', true);
         }
@@ -116,7 +126,7 @@ const setCursors = (cursors) => {
 
     else {
         mario.setVelocityX(0);
-        mario.anims.play('turn');
+        isFacingLeft ? mario.anims.play('facing-left') : mario.anims.play('facing-right');
     }
 
     /* Jumping */
